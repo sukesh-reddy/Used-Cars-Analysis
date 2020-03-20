@@ -5,7 +5,7 @@ used_cars=pd.read_csv("C:/Users/avakk/Downloads/vehicles.csv")  #Reading CSV
 
 used_cars.shape
 used_cars.info()
-#sns.heatmap(used_cars.isnull())
+sns.heatmap(used_cars.isnull())
 used_cars.isnull().sum() 
 used_cars.drop(["region_url","image_url"],axis=1,inplace=True) #No contrbution towards prediction
 used_cars.drop(["county","vin"],axis=1,inplace=True) #Null values
@@ -62,8 +62,11 @@ for i in range(509577):
                 used_cars["fuel"][i]=fuel[0].lower()
 
 
-columns=["cylinders","transmission","fuel"]
+columns=["cylinders","transmission","fuel","year","drive","title_status","paint_color","type"]
 for i in columns:
     used_cars[i]=used_cars[i].fillna(used_cars[i].value_counts().index[0])
 
-#used_cars.drop(["description"],axis=1,inplace=True)
+used_cars["odometer"] = used_cars.groupby('year')['odometer'].apply(lambda x: x.fillna(x.mean()))
+used_cars["odometer"] = used_cars["odometer"].fillna(method="ffill")
+used_cars.drop(["description","size","lat","long"],axis=1,inplace=True)
+
