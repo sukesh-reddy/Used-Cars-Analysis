@@ -1,5 +1,5 @@
 import pandas as pd
-#import seaborn as sns
+import seaborn as sns
 import re
 used_cars=pd.read_csv("C:/Users/avakk/Downloads/vehicles.csv")  #Reading CSV
 
@@ -68,5 +68,9 @@ for i in columns:
 
 used_cars["odometer"] = used_cars.groupby('year')['odometer'].apply(lambda x: x.fillna(x.mean()))
 used_cars["odometer"] = used_cars["odometer"].fillna(method="ffill")
+
+used_cars["manufacturer"]=used_cars["manufacturer"].fillna("unknown")
+used_cars["model"]=used_cars["model"].fillna("unknown")
+used_cars["model"].value_counts()
 used_cars.drop(["description","size","lat","long"],axis=1,inplace=True)
 
