@@ -70,6 +70,30 @@ for index, row in used_cars.iterrows():
 used_cars["odometer"] = used_cars.groupby('year')['odometer'].apply(lambda x: x.fillna(x.mean()))
 used_cars["odometer"] = used_cars["odometer"].fillna(method="ffill")
 
+used_cars[used_cars["condition"]=="new"]["condition"]="like new"
+
+odo_mean_excellent=used_cars[used_cars['condition'] == 'excellent']['odometer'].mean()
+odo_mean_good=used_cars[used_cars['condition'] == 'good']['odometer'].mean()
+odo_mean_salvage=used_cars[used_cars['condition'] == 'salvage']['odometer'].mean()
+odo_mean_fair=used_cars[used_cars['condition'] == 'fair']['odometer'].mean()
+odo_mean_like_new=used_cars[used_cars['condition'] == 'like new']['odometer'].mean()
+
+used_cars.loc[used_cars['odometer'] <= odo_mean_like_new, 'condition'] = used_cars.loc[used_cars['odometer'] <= odo_mean_like_new, 'condition'].fillna('like new')
+
+used_cars.loc[used_cars['odometer'] >= odo_mean_fair, 'condition'] = used_cars.loc[used_cars['odometer'] >= odo_mean_fair, 'condition'].fillna('fair')
+
+used_cars.loc[((used_cars['odometer'] > odo_mean_like_new) & 
+       (used_cars['odometer'] <= odo_mean_excellent)), 'condition'] = used_cars.loc[((used_cars['odometer'] > odo_mean_like_new) & 
+       (used_cars['odometer'] <= odo_mean_excellent)), 'condition'].fillna('excellent')
+
+used_cars.loc[((used_cars['odometer'] > odo_mean_excellent) & 
+       (used_cars['odometer'] <= odo_mean_good)), 'condition'] = used_cars.loc[((used_cars['odometer'] > odo_mean_excellent) & 
+       (used_cars['odometer'] <= odo_mean_good)), 'condition'].fillna('good')
+
+used_cars.loc[((used_cars['odometer'] > odo_mean_good) & 
+       (used_cars['odometer'] <= odo_mean_fair)), 'condition'] = used_cars.loc[((used_cars['odometer'] > odo_mean_good) & 
+       (used_cars['odometer'] <= odo_mean_fair)), 'condition'].fillna('salvage')
+
 
 columns=["cylinders","transmission","fuel","year","drive","title_status","paint_color","type"]
 for i in columns:
@@ -109,5 +133,4 @@ for index, row in used_cars.iterrows():
         row["long"]=round(extract_lat_long_via_address(row["region"])[1],4)
 
 used_cars.drop(["description","size"],axis=1,inplace=True)
-
 used_cars.to_csv('cleanedData.csv',index=False)
