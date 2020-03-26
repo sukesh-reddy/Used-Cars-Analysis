@@ -1,19 +1,13 @@
 import pandas as pd
-#import seaborn as sns
 import re
+import requests
 used_cars=pd.read_csv("C:/Users/avakk/Downloads/vehicles.csv")  #Reading CSV
 
-#used_cars.shape
-#used_cars.info()
-#sns.heatmap(used_cars.isnull())
-used_cars.isnull().sum() 
 used_cars.drop(["region_url","image_url"],axis=1,inplace=True) #No contrbution towards prediction
 used_cars.drop(["county","vin"],axis=1,inplace=True) #Null values
 
-
 def isNaN(string):
     return string != string
-
 
 def most_frequent(test_list): 
     counter = 0
@@ -26,57 +20,94 @@ def most_frequent(test_list):
             num = i 
     return num 
 
-
-for i in range(509577):
-    if isNaN(used_cars["drive"][i]):
+for index, row in used_cars.iterrows():
+    if isNaN(row["drive"]):
         regexp_drive=r"[0-9]WD"
-        if isNaN(used_cars["description"][i]):
+        if isNaN(row["description"]):
             pass
         else:
-            drive=re.findall(regexp_drive,used_cars["description"][i])
+            drive=re.findall(regexp_drive,row["description"])
             if len(drive)!=0:
-                used_cars["drive"][i]=drive[0].lower()
-    if isNaN(used_cars["transmission"][i]):
+                used_cars.set_value(index,"drive",drive[0].lower())   
+                
+    if isNaN(row["transmission"]):
         regexp_trans=r"[A|a]utomatic|[M|m]anual"
-        if isNaN(used_cars["description"][i]):
+        if isNaN(row["description"]):
             pass
         else:
-            trans=re.findall(regexp_trans,used_cars["description"][i])
+            trans=re.findall(regexp_trans,row["description"])
             if len(trans)!=0:
-                used_cars["transmission"][i]=trans[0].lower()
-    if isNaN(used_cars["year"][i]):
+                used_cars.set_value(index,"transmission",trans[0].lower())   
+
+    if isNaN(row["year"]):
         regexp_year=r"19[0-9][0-9]|20[0-9][0-9]"
-        if isNaN(used_cars["description"][i]):
+        if isNaN(row["description"]):
             pass
         else:
-            years=re.findall(regexp_year,used_cars["description"][i])
+            years=re.findall(regexp_year,row["description"])
             if len(years)!=0:
-                used_cars["year"][i]=most_frequent(years)
-    if isNaN(used_cars["fuel"][i]):
+                used_cars.set_value(index,"year",most_frequent(years))  
+
+    if isNaN(row["fuel"]):
         regexp_fuel=r"[D|d]iesel|[G|g]as|[H|h]ybrid|[E|e]lectric"
-        if isNaN(used_cars["description"][i]):
+        if isNaN(row["description"]):
             pass
         else:
-            fuel=re.findall(regexp_fuel,used_cars["description"][i])
+            fuel=re.findall(regexp_fuel,row["description"])
             if len(fuel)!=0:
-                used_cars["fuel"][i]=fuel[0].lower()
-    if isNaN(used_cars["type"][i]):
+                used_cars.set_value(index,"fuel",fuel[0].lower())   
+                
+    if isNaN(row["type"]):
         regexp_type=r"[S|s]edan|[P|p]ickup|[T|t]ruck|[C|c]oupe|[H|h]atchback|[W|w]agon|[V|v]an|[C|c]onvertible|[M|m]ini-van|[O|o]ffroad|[B|b]us"
-        if isNaN(used_cars["description"][i]):
+        if isNaN(row["description"]):
             pass
         else:
-            typecar=re.findall(regexp_type,used_cars["description"][i])
+            typecar=re.findall(regexp_type,row["description"])
             if len(typecar)!=0:
-                used_cars["type"][i]=typecar[0].lower()
+
+                used_cars.set_value(index,"type",typecar[0].lower())   
+
+used_cars["odometer"] = used_cars.groupby('year')['odometer'].apply(lambda x: x.fillna(x.mean()))
+used_cars["odometer"] = used_cars["odometer"].fillna(method="ffill")
+
 
 columns=["cylinders","transmission","fuel","year","drive","title_status","paint_color","type"]
 for i in columns:
     used_cars[i]=used_cars[i].fillna(used_cars[i].value_counts().index[0])
 
-used_cars["odometer"] = used_cars.groupby('year')['odometer'].apply(lambda x: x.fillna(x.mean()))
-used_cars["odometer"] = used_cars["odometer"].fillna(method="ffill")
+used_cars["cylinders"]=used_cars["cylinders"].str.replace('cylinders','')
+used_cars[used_cars["cylinders"]=="other"]=used_cars["cylinders"].value_counts().index[0]
+convert_dict={
+        "cylinders":int
+        }
+used_cars=used_cars.astype(convert_dict)
 
 used_cars["manufacturer"]=used_cars["manufacturer"].fillna("unknown")
 used_cars["model"]=used_cars["model"].fillna("unknown")
 
-used_cars.drop(["description","size","lat","long"],axis=1,inplace=True)
+GOOGLE_API_KEY =""
+
+def extract_lat_long_via_address(address):
+    lat, lng = None, None
+    api_key = GOOGLE_API_KEY
+    base_url = "https://maps.googleapis.com/maps/api/geocode/json"
+    endpoint = f"{base_url}?address={address}&key={api_key}"
+    r = requests.get(endpoint)
+    if r.status_code not in range(200, 299):
+        return None, None
+    try:
+        results = r.json()['results'][0]
+        lat = results['geometry']['location']['lat']
+        lng = results['geometry']['location']['lng']
+    except:
+        pass
+    return lat, lng
+
+for index, row in used_cars.iterrows():
+    if isNaN(row["lat"]):
+        row["lat"]=round(extract_lat_long_via_address(row["region"])[0],4)
+        row["long"]=round(extract_lat_long_via_address(row["region"])[1],4)
+
+used_cars.drop(["description","size"],axis=1,inplace=True)
+
+used_cars.to_csv('cleanedData.csv',index=False)
