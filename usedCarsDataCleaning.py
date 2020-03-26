@@ -28,7 +28,7 @@ for index, row in used_cars.iterrows():
         else:
             drive=re.findall(regexp_drive,row["description"])
             if len(drive)!=0:
-                used_cars.set_value(index,"drive",drive[0].lower())   
+                used_cars.at[index,"drive"]=drive[0].lower()   
                 
     if isNaN(row["transmission"]):
         regexp_trans=r"[A|a]utomatic|[M|m]anual"
@@ -37,7 +37,7 @@ for index, row in used_cars.iterrows():
         else:
             trans=re.findall(regexp_trans,row["description"])
             if len(trans)!=0:
-                used_cars.set_value(index,"transmission",trans[0].lower())   
+                used_cars.at[index,"transmission"]=trans[0].lower() 
 
     if isNaN(row["year"]):
         regexp_year=r"19[0-9][0-9]|20[0-9][0-9]"
@@ -46,7 +46,7 @@ for index, row in used_cars.iterrows():
         else:
             years=re.findall(regexp_year,row["description"])
             if len(years)!=0:
-                used_cars.set_value(index,"year",most_frequent(years))  
+                used_cars.at[index,"year"]=most_frequent(years) 
 
     if isNaN(row["fuel"]):
         regexp_fuel=r"[D|d]iesel|[G|g]as|[H|h]ybrid|[E|e]lectric"
@@ -55,7 +55,7 @@ for index, row in used_cars.iterrows():
         else:
             fuel=re.findall(regexp_fuel,row["description"])
             if len(fuel)!=0:
-                used_cars.set_value(index,"fuel",fuel[0].lower())   
+                used_cars.at[index,"fuel"]=fuel[0].lower()   
                 
     if isNaN(row["type"]):
         regexp_type=r"[S|s]edan|[P|p]ickup|[T|t]ruck|[C|c]oupe|[H|h]atchback|[W|w]agon|[V|v]an|[C|c]onvertible|[M|m]ini-van|[O|o]ffroad|[B|b]us"
@@ -65,7 +65,7 @@ for index, row in used_cars.iterrows():
             typecar=re.findall(regexp_type,row["description"])
             if len(typecar)!=0:
 
-                used_cars.set_value(index,"type",typecar[0].lower())   
+                used_cars.at[index,"type"]=typecar[0].lower()  
 
 used_cars["odometer"] = used_cars.groupby('year')['odometer'].apply(lambda x: x.fillna(x.mean()))
 used_cars["odometer"] = used_cars["odometer"].fillna(method="ffill")
