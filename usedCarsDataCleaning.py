@@ -129,8 +129,8 @@ def extract_lat_long_via_address(address):
 
 for index, row in used_cars.iterrows():
     if isNaN(row["lat"]):
-        row["lat"]=round(extract_lat_long_via_address(row["region"])[0],4)
-        row["long"]=round(extract_lat_long_via_address(row["region"])[1],4)
+        row["lat"]=extract_lat_long_via_address(row["region"])[0]
+        row["long"]=extract_lat_long_via_address(row["region"])[1]
 
 used_cars.drop(["description","size"],axis=1,inplace=True)
-used_cars.to_csv('cleanedData.csv',index=False)
+used_cars.to_csv(r'C:/Users/avakk/Downloads/cleanedData.csv',index=False)
