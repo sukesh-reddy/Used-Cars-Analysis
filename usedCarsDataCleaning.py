@@ -109,7 +109,8 @@ used_cars=used_cars.astype(convert_dict)
 used_cars["manufacturer"]=used_cars["manufacturer"].fillna("unknown")
 used_cars["model"]=used_cars["model"].fillna("unknown")
 
-GOOGLE_API_KEY =""
+GOOGLE_API_KEY ="AIzaSyBLPAtzxrdDDqNAdxmlUB40b-aIJSN9gMU"
+
 
 def extract_lat_long_via_address(address):
     lat, lng = None, None
@@ -130,17 +131,21 @@ def extract_lat_long_via_address(address):
 used_cars["region"]=used_cars["region"].str.replace('-oshkosh-FDL','')
 uni_region=pd.DataFrame(used_cars["region"].value_counts().rename_axis('unique_values').reset_index(name='counts'))
 
-del uni_region["counts"]
+uni_region.drop(["counts"],axis=1,inplace=True)
 
-del used_cars["lat"]
-del used_cars["long"]
+used_cars.drop(["lat","long"],axis=1,inplace=True)
 
 for index, row in uni_region.iterrows():
     uni_region.at[index,"lat"]=extract_lat_long_via_address(row["unique_values"])[0]
     uni_region.at[index,"long"]=extract_lat_long_via_address(row["unique_values"])[1]
 
 uni_region.columns=["region","lat","long"]
-used_cars=pd.merge(used_cars,uni_region,on="region",how="left")
 
-used_cars.drop(["description","size"],axis=1,inplace=True)
-used_cars.to_csv(r'C:/Users/avakk/Downloads/cleanedData.csv',index=False)
+pd.set_option("display.max_rows", None, "display.max_columns", None)
+used_cars_up=used_cars.merge(uni_region, on="region", how="left")
+
+used_cars_up.drop(["description","size"],axis=1,inplace=True)
+
+used_cars_up.drop(used_cars_up[used_cars_up["price"]==0].index,inplace=True)
+used_cars_up.info()
+used_cars_up.to_csv(r'C:/Users/avakk/Downloads/updatedcleanedData.csv',index=False)
