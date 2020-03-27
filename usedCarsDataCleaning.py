@@ -109,7 +109,7 @@ used_cars=used_cars.astype(convert_dict)
 used_cars["manufacturer"]=used_cars["manufacturer"].fillna("unknown")
 used_cars["model"]=used_cars["model"].fillna("unknown")
 
-GOOGLE_API_KEY ="AIzaSyBLPAtzxrdDDqNAdxmlUB40b-aIJSN9gMU"
+GOOGLE_API_KEY =""
 
 
 def extract_lat_long_via_address(address):
