@@ -127,10 +127,20 @@ def extract_lat_long_via_address(address):
         pass
     return lat, lng
 
-for index, row in used_cars.iterrows():
-    if isNaN(row["lat"]):
-        used_cars.at[index,"lat"]=extract_lat_long_via_address(row["region"])[0]
-        used_cars.at[index,"long"]=extract_lat_long_via_address(row["region"])[1]
+used_cars["region"]=used_cars["region"].str.replace('-oshkosh-FDL','')
+uni_region=pd.DataFrame(used_cars["region"].value_counts().rename_axis('unique_values').reset_index(name='counts'))
+
+del uni_region["counts"]
+
+del used_cars["lat"]
+del used_cars["long"]
+
+for index, row in uni_region.iterrows():
+    uni_region.at[index,"lat"]=extract_lat_long_via_address(row["unique_values"])[0]
+    uni_region.at[index,"long"]=extract_lat_long_via_address(row["unique_values"])[1]
+
+uni_region.columns=["region","lat","long"]
+used_cars=pd.merge(used_cars,uni_region,on="region",how="left")
 
 used_cars.drop(["description","size"],axis=1,inplace=True)
 used_cars.to_csv(r'C:/Users/avakk/Downloads/cleanedData.csv',index=False)
