@@ -111,6 +111,7 @@ used_cars["model"]=used_cars["model"].fillna("unknown")
 
 GOOGLE_API_KEY =""
 
+
 def extract_lat_long_via_address(address):
     lat, lng = None, None
     api_key = GOOGLE_API_KEY
@@ -127,10 +128,24 @@ def extract_lat_long_via_address(address):
         pass
     return lat, lng
 
-for index, row in used_cars.iterrows():
-    if isNaN(row["lat"]):
-        row["lat"]=extract_lat_long_via_address(row["region"])[0]
-        row["long"]=extract_lat_long_via_address(row["region"])[1]
+used_cars["region"]=used_cars["region"].str.replace('-oshkosh-FDL','')
+uni_region=pd.DataFrame(used_cars["region"].value_counts().rename_axis('unique_values').reset_index(name='counts'))
 
-used_cars.drop(["description","size"],axis=1,inplace=True)
-used_cars.to_csv(r'C:/Users/avakk/Downloads/cleanedData.csv',index=False)
+uni_region.drop(["counts"],axis=1,inplace=True)
+
+used_cars.drop(["lat","long"],axis=1,inplace=True)
+
+for index, row in uni_region.iterrows():
+    uni_region.at[index,"lat"]=extract_lat_long_via_address(row["unique_values"])[0]
+    uni_region.at[index,"long"]=extract_lat_long_via_address(row["unique_values"])[1]
+
+uni_region.columns=["region","lat","long"]
+
+pd.set_option("display.max_rows", None, "display.max_columns", None)
+used_cars_up=used_cars.merge(uni_region, on="region", how="left")
+
+used_cars_up.drop(["description","size"],axis=1,inplace=True)
+
+used_cars_up.drop(used_cars_up[used_cars_up["price"]==0].index,inplace=True)
+used_cars_up.info()
+used_cars_up.to_csv(r'C:/Users/avakk/Downloads/updatedcleanedData.csv',index=False)
