@@ -1,7 +1,7 @@
 import pandas as pd
 import numpy as np
 import seaborn as sns
-used_cars=pd.read_csv("C:/sem2/vehicles.csv")  #Reading CSV
+used_cars=pd.read_csv("C:/Users/avakk/Downloads/vehicles.csv")  #Reading CSV
 
 
 ndim = used_cars.ndim 
