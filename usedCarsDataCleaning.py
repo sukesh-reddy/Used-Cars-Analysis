@@ -102,7 +102,7 @@ used_cars["cylinders"]=used_cars["cylinders"].str.replace('cylinders','')
 for index, row in used_cars.iterrows():
     if(row["cylinders"]=="other"):
         used_cars.at[index,"cylinders"]=used_cars["cylinders"].value_counts().index[0]
-#used_cars[used_cars["cylinders"]=="other"]=used_cars["cylinders"].value_counts().index[0]
+
 convert_dict={
         "cylinders":int
         }
