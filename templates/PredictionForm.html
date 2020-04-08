@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+
+{% block head %} 
+<title>Preowned cars price prediction</title>
+{% endblock %}
+
+{% block body %} 
+    <form name="computeprice" action="." method="post">
+        <label>Car Name: </label>
+        <input type="text" name="carname"><br>
+        <label>Manufacture Year</label>
+        <input type="text" name="myear"><br>
+        <label>Odometer reading</label>
+        <input type="text" name="odo"><br>
+        <!-- <label>Accident History?</label>
+        <input type="radio" id="yes" name="rad" value="Yes">
+        <label for="yes">Yes</label>
+        <input type="radio" id="no" name="rad" value="No">
+        <label for="no">No</label>
+        <input type="radio" id="maybe" name="rad" value="Maybe">
+        <label for="maybe">Maybe</label><br><br>-->
+        <input type="submit" value="COMPUTE PRICE"> 
+    </form>
+{% endblock %}
