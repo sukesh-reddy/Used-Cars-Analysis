@@ -3,13 +3,23 @@ from sklearn import ensemble
 import pandas as pd
 import numpy as np
 from sklearn.preprocessing import LabelEncoder
+from sklearn.utils import column_or_1d
 
 cleaned=pd.read_csv("C:/Users/avakk/Downloads/updatedcv.csv")
 cleaned.drop(["url","lat","long","id","model","region"],axis=1,inplace=True)
+cleaned["cylinders"]=cleaned["cylinders"].str.replace('cylinders','')
+
+convert_dict={
+        "cylinders":int
+        }
+cleaned=cleaned.astype(convert_dict)
 
 cleaned.drop(cleaned[cleaned["title_status"]=="parts only"].index,inplace=True)
 cleaned.drop(cleaned[cleaned["title_status"]=="missing"].index,inplace=True)
 cleaned.drop(cleaned[cleaned["title_status"]=="lien"].index,inplace=True)
+
+cleaned.drop(cleaned[cleaned["price"]<2000].index,inplace=True)
+cleaned.drop(cleaned[cleaned["price"]>40000].index,inplace=True)
 
 northeast=["ct","me","ma","nh","ri","vt","nj","ny","pa"]
 midwest=["il","in","mi","oh","wi","ia","ks","mn","mo","ne","nd","sd"]
@@ -32,15 +42,6 @@ for index, row in cleaned.iterrows():
     if(row["year"]>2020):
         cleaned.at[index,"year"]=yearmed
 
-pricemed=cleaned["price"].median()
-for index, row in cleaned.iterrows():
-    if(row["price"]<2000):
-        cleaned.at[index,"price"]=pricemed
-    if(row["price"]>40000):
-        cleaned.at[index,"price"]=pricemed
-        
-cleaned.head()
-
 y=cleaned["price"]
 x=cleaned.drop('price',axis=1)
 
@@ -56,7 +57,6 @@ x_yearmax=x_train["year"].max()
 
 x_train["year"]=((x_train["year"]-x_yearmin)/(x_yearmax-x_yearmin)) 
 
-
 y_trmin=y_train.min()
 y_trmax=y_train.max()
 y_train=((y_train-y_trmin)/(y_trmax-y_trmin)) 
@@ -68,14 +68,22 @@ y_test=((y_test-y_trmin)/(y_trmax-y_trmin))
 
 ordinal_columns=["cylinders"]
 
-for col in ordinal_columns:
-     le = LabelEncoder()
-     le.fit_transform(list(x_train[col].astype(str).values))
-     x_train[col] = le.transform(list(x_train[col].astype(str).values))
+class LabelEncoder(LabelEncoder):
+    def fit(self, y):
+        y = column_or_1d(y, warn=True)
+        self.classes_ = pd.Series(y).unique().sort()
+        return self
+
+ordinal_columns=["cylinders"]
 
 for col in ordinal_columns:
-    le.fit(list(x_test[col].astype(str).values))
-    x_test[col] = le.transform(list(x_test[col].astype(str).values))
+     le = LabelEncoder()
+     le.fit_transform(list(x_train[col].values))
+     x_train[col] = le.transform(list(x_train[col].values))
+
+for col in ordinal_columns:
+    le.fit(list(x_test[col].values))
+    x_test[col] = le.transform(list(x_test[col].values))
     
 xx_train=pd.get_dummies(x_train)
 
