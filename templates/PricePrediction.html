@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+
+{% block head %} 
+<title>Preowned cars price prediction</title>
+{% endblock %}
+
+{% block body %} 
+    <h1>Hello</h1>
+        {% for a in pred %}
+            <h3>{{a.title}}'s actual name is:</h3>
+            <p>{{a.content}}</p>
+        {% endfor %}
+{% endblock %}
