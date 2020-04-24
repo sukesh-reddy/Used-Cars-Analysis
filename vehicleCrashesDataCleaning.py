@@ -10,4 +10,18 @@ crashes["TOTAL INJURIES/DEATHS"]=crashes["NUMBER OF PERSONS INJURED"]+crashes["N
 crashes.drop(["NUMBER OF PERSONS INJURED","NUMBER OF PERSONS KILLED","NUMBER OF PEDESTRIANS INJURED","NUMBER OF PEDESTRIANS KILLED","NUMBER OF CYCLIST INJURED","NUMBER OF CYCLIST KILLED","NUMBER OF MOTORIST INJURED","NUMBER OF MOTORIST KILLED"],axis=1,inplace=True)
 
 crashes.columns=["Crash Date","Crash Time","Borough","Latitude","Longitude","Vehicle Type","Total Injuries/Deaths"]
+
 crashes.info()
+crashes.isnull().sum()
+
+crashes["Crash Date"]=pd.to_datetime(crashes["Crash Date"])
+
+for index, row in crashes.iterrows():
+    crashes.at[index,"Year"]=str(row["Crash Date"]).split("-")[0]
+    
+crashes["Year"].value_counts()
+    
+crashes["Year"]=pd.to_numeric(crashes["Year"])
+
+updated=crashes[crashes["Year"]>2014]
+
