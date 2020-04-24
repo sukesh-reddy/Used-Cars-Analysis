@@ -38,23 +38,41 @@ def adder_page():
     	result=exp(result)-1
     	return '''
        	<html>
-           	<body>
-           	<p>Price in $ {result}</p>
+           	<body style="background-image:url('https://wallpaperaccess.com/full/258527.jpg')">
+           	<h2 style="color: black;background-color:white; margin-top:100px;padding-top:5px;padding-bottom: 5px; padding-left: 180px;">Price in $ {result}</h2>
            	</body>
        	</html>
    	'''.format(result=result)
+
+
+    
+    
+    
     
 	return '''
-    	<html><head></head><body>
-	<h3>Price Prediction</h3>
+   	<html>
+<style>
+body{
+background: linear-gradient(rgba(255, 255, 255, 0.2),
+          	rgba(255, 255, 255, 0.2),
+          	rgba(255, 255, 255, 0.2),
+          	rgba(255, 255, 255, 0.2)),
+          	url('https://wallpaperaccess.com/full/258527.jpg');
+}
+</style>
+<body>
 <div>
-<form action"." method="POST">
-Model Year: <input name="year" type="text"> <br>
-Manufacturer:<select name="manufacturer">
+<h3 style="color: black;background-color:white; padding-top:5px;padding-bottom: 5px; padding-left: 180px;">
+Pre-Owned Cars Price Prediction</h3>
+<form action="." method="POST">
+<div style="margin-top:4px;padding-left: 100px;padding-right: 132px;float:left"><span style="background-color:white">Model Year:</span></div>
+<div> <input name="year" style="margin-top:4px;padding-left: 10px; padding-right: 0px;" name="year" type="text" /> </div>
+<div style="padding-left: 100px; padding-right: 120px; float: left;"><span style="margin-top:4px;background-color:white">Manufacturer:</span></div>
+<div><select name="manufacturer" style="margin-top:4px;padding-left: 40px; padding-right: 8px;">
 <option value="ford">Ford</option>
 <option value="chevrolet">Chevrolet</option>
 <option value="toyota">Toyota</option>
-<option value="nissan">Nissan</option>
+<option value="nissan" selected>Nissan</option>
 <option value="ram">Ram</option>
 <option value="honda">Honda</option>
 <option value="jeep">Jeep</option>
@@ -94,45 +112,64 @@ Manufacturer:<select name="manufacturer">
 <option value="ferrari">Ferrari</option>
 <option value="morgan">Morgan</option>
 <option value="unknown">Unknown</option>
-</select><br> Condition:<select name="condition">
+</select></div>
+<div style="padding-left: 100px;padding-right: 143px; float: left;"><span style="margin-top:4px;background-color:white">Condition:</span></div>
+<div><select name="condition" style="margin-top:4px;padding-left: 40px; padding-right: 53px;">
 <option value="new">New</option>
-<option value="excellent">Excellent</option>
+<option value="excellent" selected>Excellent</option>
 <option value="like new">Like New</option>
 <option value="good">Good</option>
 <option value="salvage">Salvage</option>
 <option value="fair">Fair</option>
-</select><br> Cylinders:<select name="cylinders">
+</select></div>
+<div style="padding-left: 100px; padding-right: 145px; float: left;"><span style="margin-top:4px;background-color:white">Cylinders:</span></div>
+<div><select  name="cylinders" style="margin-top:4px;padding-left: 40px; padding-right: 37px;">
 <option value="0">3 cylinders</option>
-<option value="1">4 cylinders</option>
+<option value="1" selected>4 cylinders</option>
 <option value="2">5 cylinders</option>
 <option value="3">6 cylinders</option>
 <option value="4">8 cylinders</option>
 <option value="5">10 cylinders</option>
 <option value="6">12 cylinders</option>
-</select><br> Fuel:<select name="fuel">
+</select></div>
+<div style="padding-left: 100px; padding-right: 178px; float: left;"><span style="margin-top:4px;background-color:white">Fuel:</span></div>
+<div><select name="fuel" style="margin-top:4px;padding-left: 40px; padding-right: 65px;">
 <option value="gas">Gas</option>
-<option value="diesel">Diesel</option>
+<option value="diesel" selected>Diesel</option>
 <option value="hybrid">Hybrid</option>
 <option value="electric">Electric</option>
 <option value="other">Other</option>
-</select><br> Odometer: <input name="odometer" type="text"> <br> Title Status:<select name="title_status">
-<option value="clean">Clean</option>
+</select></div>
+<div style="padding-left: 100px; padding-right: 143px; float: left;"><span style="background-color:white">Odometer:</span></div>
+<div><input style="margin-top:4px;padding-left: 10px; padding-right: 2px;" name="odometer" type="text" /></div>
+<div style="padding-left: 100px; padding-right: 134px; float: left;"><span style="margin-top:4px;background-color:white">Title Status:<span></div>
+<div>
+<select name="title_status" style="margin-top:4px;padding-left: 40px; padding-right: 60px;">
+<option value="clean" selected>Clean</option>
 <option value="rebuilt">Rebuilt</option>
 <option value="salvage">Salvage</option>
-</select><br> Transmission:<select name="transmission">
-<option value="automatic">Automatic</option>
+</select></div>
+<div style="padding-left: 100px; padding-right: 120px; float: left;"><span style="margin-top:4px;background-color:white">Transmission:</span></div>
+<div><select  name="transmission" style="margin-top:4px;padding-left: 40px; padding-right: 51px;">
+<option value="automatic" selected>Automatic</option>
 <option value="manual">Manual</option>
 <option value="other">Other</option>
-</select><br> Drive:<select name="drive">
+</select></div>
+<div style="padding-left: 100px; padding-right: 170px; float: left;"><span style="margin-top:4px;background-color:white">Drive:</span></div>
+<div>
+<select name="drive" style="margin-top:4px;padding-left: 40px; padding-right: 85px;">
 <option value="1wd">1wd</option>
 <option value="2wd">2wd</option>
 <option value="3wd">3wd</option>
-<option value="4wd">4wd</option>
+<option value="4wd" selected>4wd</option>
 <option value="5wd">5wd</option>
 <option value="6wd">6wd</option>
 <option value="7wd">7wd</option>
-</select><br>
-Type:<select name="vtype">
+</select></div>
+
+<div style="padding-left: 100px; padding-right: 174px; float: left;"><span style="margin-top:4px;background-color:white">Type:</span></div>
+<div>
+<select style="margin-top:4px;padding-left: 40px; padding-right: 42px;" name="vtype">
 <option value="sedan">Sedan</option>
 <option value="SUV">SUV</option>
 <option value="truck">Truck</option>
@@ -146,10 +183,13 @@ Type:<select name="vtype">
 <option value="mini-van">Mini-Van</option>
 <option value="offroad">Offroad</option>
 <option value="other">Other</option>
-</select><br>
-Paint Color:<select name="paint_color">
+</select></div>
+
+
+<div style="padding-left: 100px; padding-right: 133px; float: left;"><span style="margin-top:4px;background-color:white">Paint Color:</span></div>
+<div><select name="paint_color" style="margin-top:4px;padding-left: 40px; padding-right: 63px;">
 <option value="white">White</option>
-<option value="black">Black</option>
+<option value="black" selected>Black</option>
 <option value="silver">Silver</option>
 <option value="blue">Blue</option>
 <option value="red">Red</option>
@@ -160,21 +200,30 @@ Paint Color:<select name="paint_color">
 <option value="orange">Orange</option>
 <option value="purple">Purple</option>
 <option value="custom">Custom</option>
-</select><br> State:<select name="state">
+</select></div>
+<div style="padding-left: 100px; padding-right: 174px; float: left;"><span style="margin-top:4px;background-color:white">State:</span></div>
+<div>
+<select name="state" style="margin-top:4px;padding-left: 40px; padding-right: 49px;">
 <option value="midwest">MidWest</option>
-<option value="south">South</option>
+<option value="south" selected>South</option>
 <option value="northeast">NorthEast</option>
 <option value="west">West</option>
-</select><br>
-
-<input type="submit" value="Submit">
+</select></div><br>
+<div style="padding-left: 100px; padding-right: 168px; float: left;"><input style="padding-left: 165px; padding-right: 175px;" type="submit" value="Submit" /></div>
 </form>
 </div>
- 
- </body></html>
+</body>
+</html>
+
+
+
+
 
 	'''
 
 
 if __name__ == '__main__':
 	app.run()
+
+
+
